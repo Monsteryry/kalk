@@ -1,0 +1,141 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Wiel{
+		int wsp[222];
+		int st;
+}Wiel;
+
+int list(){
+	printf("Wybierz opcje:\n");
+	printf("0. Zeruj rejestr.\n");
+	printf("1. Dodaj do rejestru.\n");
+	printf("2. Odejmij od rejestru.\n");
+	printf("3. Pomnoz rejestr.\n");
+	printf("4. Podziel rejestr (jesli mozliwe)\n");
+	printf("5. Reszta z dzielenia przez rejestr (jesli mozliwe)\n");
+	printf("6. Zapisz rejestr w pamieci.\n");
+	printf("7. Odtworz rejestr z pamieci\n");
+}
+
+int modulo(){
+	int a;
+	printf("Podaj podstawe modularna:\n");
+	scanf("%d", &a);
+	return a;
+}
+
+void wpisz(Wiel *z){
+	int i;
+	printf("Podaj stopien wielomianu\n");
+	scanf("%d", &z->st);
+	for (i = 0; i <= z->st; i++){
+		printf("Podaj wspolczynnik wielomianu x^%d\n", i);
+		scanf("%d", &z->wsp[i]);
+	}
+}
+
+void drukuj(Wiel *z){
+	int i;
+	for ( i = z->st; i>= 0; i--){
+		if (i > 0)printf("%dx^%d+", z->wsp[i], i);
+		else printf("%dx^%d\n", z->wsp[i], i);
+	}
+}
+
+void czysc(Wiel *z){
+	int i;
+	for (i = z->st; i >= 0; i--){
+		z->wsp[i] = 0;
+	}z->st = 0;
+}
+
+void plus(Wiel *z, Wiel *x, Wiel *v, int a){
+	int i = 0; 
+	int j = 0; 
+	int k = 0;
+	wpisz(x);
+	int w = x->st + 1;
+	int q = z->st + 1;
+	while (i < q && j < w){
+		if (z->st == x->st){
+			v->st = z->st;
+			v->wsp[k] = (z->wsp[i] + x->wsp[j])%a;
+			i++;
+			j++;
+			k++;
+		}
+		else if (z->st > x->st){
+			v->st = z->st;
+			v->wsp[k] = z->wsp[i];
+			i++;
+			k++;
+		}
+		else{
+			v->st = x->st;
+			v->wsp[k] = x->wsp[j];
+			j++;
+			k++;
+		}
+	}
+	for (k = v->st; k >= 0; k--){
+		if (k > 0)printf("%dx^%d+", v->wsp[k], k);
+		else printf("%dx^%d(mod%d)\n", v->wsp[k], k, a);
+	}
+}
+
+void minus(Wiel *z, Wiel *x, Wiel *c, int a){
+	int i = 0; 
+	int j = 0; 
+	int k = 0;
+	
+	wpisz(x);
+	int w = x->st + 1;
+	int q = z->st + 1;
+
+	while (i < q && j < w){
+		if (z->st == x->st){
+			c->st = z->st;
+			c->wsp[k] = (z->wsp[i] - x->wsp[j])%a;
+			j++;
+			i++;
+			k++;
+		}
+		else if (z->st > x->st){
+			c->st = z->st;
+			c->wsp[k] = z->wsp[i];
+			i++;
+			k++;
+		}
+		else{
+			c->st = x->st;
+			c->wsp[k] = x->wsp[j];
+			j++;
+			k++;
+		}
+	}
+	for (k = c->st; k >= 0; k--){
+		if (k > 0)printf("%dx^%d+", c->wsp[k], k);
+		else printf("%dx^%d(mod%d)\n", c->wsp[k], k, a);
+	}
+}
+
+int main(){
+	Wiel z; Wiel x; Wiel c; Wiel v;
+	int n;
+	int a = modulo();
+	wpisz(&z);
+	list();
+	scanf("%d", &n);
+	if(n==0){
+		czysc(&z);
+	}
+	if(n==1){
+		plus(&z, &x, &v, a);
+	}
+	if(n==2){
+		minus(&z, &x, &c, a);
+	}
+	system("pause");
+	return 0;
+}
